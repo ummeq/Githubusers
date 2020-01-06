@@ -45,7 +45,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<h5 mat-dialog-title>My Repository</h5>\n<h5>username: {{data.username}}</h5>\n<mat-dialog-content *ngFor=\"let users of data.repoDetails; let i = index;\">\n  \n    <ul>\n      <li>\n        {{users.name}}\n      </li>\n    </ul>\n  \n</mat-dialog-content>\n<mat-dialog-actions align=\"end\">\n    <button mat-button mat-dialog-close>Cancel</button>\n  </mat-dialog-actions>");
+/* harmony default export */ __webpack_exports__["default"] = ("<h5 mat-dialog-title>My Repository</h5>\n<h5>username: {{data.username}}</h5>\n<mat-dialog-content *ngFor=\"let users of data.repoDetails; let i = index;\">\n  <ul>\n    <li>\n      {{users.name}}\n    </li>\n  </ul>\n</mat-dialog-content>\n<mat-dialog-actions align=\"end\">\n    <button mat-button mat-dialog-close>Cancel</button>\n</mat-dialog-actions>");
 
 /***/ }),
 
@@ -58,7 +58,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"container\">\n    <app-users-search></app-users-search>\n    <div class=\"row product-list\" style=\"margin: 1em 0;\">\n        <div class=\"col-sm-12 col-sm-6 col-lg-4\"\n            *ngFor=\"let users of userList; let i = index;\">\n            <div class=\"card mb-4 shadow-sm \" style=\"width: 18rem;\">\n                <div class=\"product-list__image\" >\n                    <div class=\"align-center\">\n                        <h5 >{{users.login}}</h5>\n                        <div (click)=\"usersRepos.getUserRepos()\" style=\"display: inline\">\n                            <app-users-repos [userlist] = users #usersRepos ></app-users-repos>\n                        </div>\n                </div>\n                    <img class=\"card-img-top\" src=\"{{users.avatar_url}}\" alt=\"Card image cap\"> \n                    \n                </div>\n                \n            </div>\n        </div>\n     </div>\n</div>\n\n\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"container\">\n    <app-users-search (searchedUser)='searchedUserData($event)'></app-users-search>\n    <div class=\"row \" style=\"margin: 1em 0;\">\n        <div class=\"col-sm-12 col-sm-6 col-lg-4\" *ngFor=\"let users of userList; let i = index;\">\n            <div class=\"card mb-4 shadow-sm w-75 p-3\" style=\"width: 18rem;\">\n                <div class=\"product-list__image\">\n                    <div class=\"align-center\">\n                        <h5>{{users.login}}</h5>\n                        <div (click)=\"usersRepos.getUserRepos()\" style=\"display: inline\">\n                            <app-users-repos [userlist]=users #usersRepos></app-users-repos>\n                        </div>\n                    </div>\n                    <img class=\"card-img-top\" src=\"{{users.avatar_url}}\" alt=\"Card image cap\">\n                </div>\n            </div>\n        </div>\n    </div>\n</div>");
 
 /***/ }),
 
@@ -84,7 +84,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (" <input type=\"text\" class=\"form-control\" placeholder=\"Github Username\" [(ngModel)]=\"searcj\"\n                    name=\"username\"  #username=\"ngModel\" (keyup)=\"searchUser($event)\">\n            \n        \n    \n\n\n ");
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"mt-0\">\n    <input type=\"text\" class=\"form-control\" placeholder=\"Github Username\" [(ngModel)]=\"searcj\" name=\"username\"\n        #username=\"ngModel\" (keyup)=\"searchUser($event)\">\n</div>");
 
 /***/ }),
 
@@ -493,6 +493,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let RepositoryListModalComponent = class RepositoryListModalComponent {
+    // To get data from another component we have to inject MAt_DIALOG
     constructor(data) {
         this.data = data;
     }
@@ -550,22 +551,36 @@ let UsersListComponent = class UsersListComponent {
     constructor(gitusersService, dialog) {
         this.gitusersService = gitusersService;
         this.dialog = dialog;
-        this.show = false;
     }
     ngOnInit() {
+        // Get all users list
         this.gitusersService.getUser()
             .subscribe(data => {
             this.userList = data;
         }, error => this.errorMessage = error);
+    }
+    // Function to display searched user
+    searchedUserData(event) {
+        if (event) { // if there is input display searched user
+            this.userList = [
+                {
+                    login: event.login,
+                    avatar_url: event.avatar_url
+                }
+            ];
+        }
+        else {
+            this.gitusersService.getUser() // if there is no input display all users
+                .subscribe(data => {
+                this.userList = data;
+            }, error => this.errorMessage = error);
+        }
     }
 };
 UsersListComponent.ctorParameters = () => [
     { type: _services_github_service__WEBPACK_IMPORTED_MODULE_2__["GithubService"] },
     { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_3__["MatDialog"] }
 ];
-tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-    Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])()
-], UsersListComponent.prototype, "userName", void 0);
 UsersListComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
     Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
         selector: 'app-users-list',
@@ -587,7 +602,7 @@ UsersListComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (".cursor-pointer {\r\n    cursor: pointer\r\n}\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy91c2Vycy1yZXBvcy91c2Vycy1yZXBvcy5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0lBQ0k7QUFDSiIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvdXNlcnMtcmVwb3MvdXNlcnMtcmVwb3MuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5jdXJzb3ItcG9pbnRlciB7XHJcbiAgICBjdXJzb3I6IHBvaW50ZXJcclxufSJdfQ== */");
+/* harmony default export */ __webpack_exports__["default"] = (".cursor-pointer {\r\n    cursor: pointer\r\n}\r\n\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy91c2Vycy1yZXBvcy91c2Vycy1yZXBvcy5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0lBQ0k7QUFDSiIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvdXNlcnMtcmVwb3MvdXNlcnMtcmVwb3MuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5jdXJzb3ItcG9pbnRlciB7XHJcbiAgICBjdXJzb3I6IHBvaW50ZXJcclxufVxyXG5cclxuIl19 */");
 
 /***/ }),
 
@@ -621,14 +636,13 @@ let UsersReposComponent = class UsersReposComponent {
         this.showButton = true;
     }
     ngOnInit() {
-        this.show = false;
     }
+    // Function to get repository 
     getUserRepos() {
         this.gitusersService.getRepos(this.userlist.login).subscribe((userList) => {
             userList.forEach((repos) => {
                 this.userReposData.push(repos);
             });
-            console.log(this.userReposData);
             this.dialog.open(_repository_list_modal_repository_list_modal_component__WEBPACK_IMPORTED_MODULE_4__["RepositoryListModalComponent"], {
                 height: '400px',
                 width: '600px',
@@ -639,6 +653,7 @@ let UsersReposComponent = class UsersReposComponent {
             });
         });
     }
+    // Option function to hide dailog
     onNoClick() {
         this.dialogRef.close();
     }
@@ -672,7 +687,7 @@ UsersReposComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvdXNlcnMtc2VhcmNoL3VzZXJzLXNlYXJjaC5jb21wb25lbnQuY3NzIn0= */");
+/* harmony default export */ __webpack_exports__["default"] = (".mt-0 {\r\n    margin-top: 1.5rem !important;\r\n  }\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy91c2Vycy1zZWFyY2gvdXNlcnMtc2VhcmNoLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSw2QkFBNkI7RUFDL0IiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3VzZXJzLXNlYXJjaC91c2Vycy1zZWFyY2guY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5tdC0wIHtcclxuICAgIG1hcmdpbi10b3A6IDEuNXJlbSAhaW1wb3J0YW50O1xyXG4gIH0iXX0= */");
 
 /***/ }),
 
@@ -695,22 +710,31 @@ __webpack_require__.r(__webpack_exports__);
 let UsersSearchComponent = class UsersSearchComponent {
     constructor(gitusersService) {
         this.gitusersService = gitusersService;
+        this.searchedUser = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
     }
     ngOnInit() {
     }
+    // Function to search user
     searchUser(event) {
-        this.userName += event.target.value;
-        this.gitusersService.getRepos(this.userName).subscribe((userList) => {
-            userList.forEach((repos) => {
-                console.log(repos);
-                //this.userReposData.push(repos);
-            });
-        });
+        this.userName = '';
+        this.userName = event.target.value;
+        if (event.target.value) {
+            this.gitusersService.getSearchUser(this.userName).subscribe((userList) => {
+                this.searchedUser.emit(userList);
+            }, error => this.errorMessage = error);
+        }
+        else {
+            this.errorMessage = '';
+            this.searchedUser.emit(this.errorMessage);
+        }
     }
 };
 UsersSearchComponent.ctorParameters = () => [
     { type: src_app_services_github_service__WEBPACK_IMPORTED_MODULE_2__["GithubService"] }
 ];
+tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+    Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Output"])()
+], UsersSearchComponent.prototype, "searchedUser", void 0);
 UsersSearchComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
     Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
         selector: 'app-users-search',
@@ -758,7 +782,9 @@ let GithubService = class GithubService {
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(res => res));
     }
     getSearchUser(username) {
-        return this.http.get('https://api.github.com/users/' + username + '/repos')
+        return this
+            .http
+            .get('https://api.github.com/users/' + username + '?client_id=' + this.clientId + ' &client_secret = ' + this.clientSecret)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["map"])(res => res));
     }
 };
